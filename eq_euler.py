@@ -141,5 +141,6 @@ def update(num):
 ani = FuncAnimation(fig, update, frames=len(t_eval), interval=20, blit=True)
 ax_body.legend(loc='upper right', fontsize='small')
 ax_fixed.legend(loc='upper right', fontsize='small')
+ax3d.legend(loc='upper left', fontsize='small')
 plt.tight_layout()
 plt.show()
