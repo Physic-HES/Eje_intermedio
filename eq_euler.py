@@ -114,8 +114,8 @@ ax_fixed.set_title(r'Sistema Fijo ($\omega_{x,y,z}$)')
 ax_fixed.set_xlabel('Tiempo [s]')
 ax_fixed.grid(True)
 
-lines3d = [ax3d.plot([], [], [], color=colors[i], lw=2)[0] for i in range(3)]
-omega_line3d, = ax3d.plot([], [], [], color='black', lw=3)
+lines3d = [ax3d.plot([], [], [], color=colors[i], lw=2, label=f'Eje {i+1}')[0] for i in range(3)]
+omega_line3d, = ax3d.plot([], [], [], color='black', lw=3, label=r'$\vec{\omega}$')
 trace3d, = ax3d.plot([], [], [], color='gray', lw=0.5, alpha=0.5)
 
 lines_body = [ax_body.plot([], [], color=colors[i], label=rf'$\omega_{i+1}$')[0] for i in range(3)]
