@@ -1,0 +1,73 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{Cinemática de la Rotación y la Matriz Antisimétrica en el Efecto Dzhanibekov}
+\author{Hugo Sosa}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+Para simular el efecto Dzhanibekov, resolvemos las ecuaciones de Euler que nos dan las componentes de la velocidad angular en el sistema de referencia del cuerpo ($\omega_1, \omega_2, \omega_3$). Sin embargo, para visualizar el cuerpo rotando en el espacio real (sistema de laboratorio o fijo), necesitamos una forma de actualizar su orientación.
+
+En el código, utilizamos una matriz de rotación $R$ y su derivada temporal $\dot{R}$. La clave de la implementación reside en la relación:
+\begin{equation}
+    \dot{R} = R \Omega_{body}
+\end{equation}
+donde $\Omega_{body}$ es una matriz antisimétrica construida a partir de $\vec{\omega}$. En este documento explicaremos de dónde sale esta matriz y por qué funciona.
+
+\section{La Matriz de Rotación como un Conjunto de Ejes}
+Imagina que el sistema de laboratorio tiene ejes fijos $\hat{x}, \hat{y}, \hat{z}$. El cuerpo rígido tiene sus propios ejes principales de inercia $\hat{e}_1, \hat{e}_2, \hat{e}_3$. La matriz de rotación $R$ en cualquier instante es simplemente una matriz cuyas columnas son estos ejes principales expresados en las coordenadas del laboratorio:
+\begin{equation}
+    R = \begin{bmatrix} | & | & | \\ \hat{e}_1 & \hat{e}_2 & \hat{e}_3 \\ | & | & | \end{bmatrix}
+\end{equation}
+
+\section{La Dinámica de los Ejes}
+De la mecánica clásica básica, sabemos que si un vector $\vec{A}$ está "pegado" a un cuerpo que rota con velocidad angular $\vec{\omega}$, su derivada temporal vista desde el sistema fijo es:
+\begin{equation}
+    \frac{d\vec{A}}{dt} = \vec{\omega}_{fijo} \times \vec{A}
+\end{equation}
+Como nuestros ejes $\hat{e}_i$ están pegados al cuerpo, su evolución es:
+\begin{equation}
+    \dot{\hat{e}}_1 = \vec{\omega}_{fijo} \times \hat{e}_1, \quad \dot{\hat{e}}_2 = \vec{\omega}_{fijo} \times \hat{e}_2, \quad \dot{\hat{e}}_3 = \vec{\omega}_{fijo} \times \hat{e}_3
+\end{equation}
+Esto significa que la derivada de la matriz $R$ es:
+\begin{equation}
+    \dot{R} = \begin{bmatrix} | & | & | \\ \vec{\omega}_{fijo} \times \hat{e}_1 & \vec{\omega}_{fijo} \times \hat{e}_2 & \vec{\omega}_{fijo} \times \hat{e}_3 \\ | & | & | \end{bmatrix}
+\end{equation}
+
+\section{El Producto Vectorial como Matriz}
+Aquí es donde entra la magia del álgebra lineal. El producto vectorial $\vec{a} \times \vec{b}$ se puede escribir como el producto de una matriz antisimétrica por un vector:
+\begin{equation}
+    \vec{a} \times \vec{b} = [\vec{a}]_\times \vec{b} = \begin{bmatrix} 0 & -a_z & a_y \\ a_z & 0 & -a_x \\ -a_y & a_x & 0 \end{bmatrix} \begin{bmatrix} b_x \\ b_y \\ b_z \end{bmatrix}
+\end{equation}
+A esta matriz $[\vec{a}]_\times$ se la llama a veces matriz \textit{skew-symmetric} o matriz antisimétrica.
+
+\section{Cuerpo vs. Laboratorio}
+En el código, tenemos $\vec{\omega}_{cuerpo} = (\omega_1, \omega_2, \omega_3)$. La relación entre la velocidad angular en el sistema fijo y en el sistema del cuerpo es:
+\begin{equation}
+    \vec{\omega}_{fijo} = R \vec{\omega}_{cuerpo}
+\end{equation}
+
+Si usamos esta relación y la propiedad del producto vectorial bajo rotaciones, se puede demostrar (tras un poco de álgebra) que la evolución de $R$ se puede expresar de dos formas equivalentes:
+\begin{enumerate}
+    \item Usando $\vec{\omega}_{fijo}$: $\dot{R} = [\vec{\omega}_{fijo}]_\times R$
+    \item Usando $\vec{\omega}_{cuerpo}$: $\dot{R} = R [\vec{\omega}_{cuerpo}]_\times$
+\end{enumerate}
+
+\section{¿Por qué usamos la segunda opción?}
+En el paso 2 de nuestro código, usamos la segunda opción:
+\begin{equation}
+    \dot{R} = R \begin{bmatrix} 0 & -\omega_3 & \omega_2 \\ \omega_3 & 0 & -\omega_1 \\ -\omega_2 & \omega_1 & 0 \end{bmatrix}
+\end{equation}
+Esto es extremadamente conveniente porque las componentes $\omega_1, \omega_2, \omega_3$ son precisamente las que ya calculamos en el Paso 1 al resolver las ecuaciones de Euler. 
+
+Integrar esta ecuación diferencial nos permite "arrastrar" la orientación del cuerpo paso a paso, asegurando que los ejes $\hat{e}_i$ siempre sean ortogonales y representen fielmente la rotación física del objeto, permitiéndonos luego calcular $\vec{\omega}_{fijo}$ simplemente multiplicando $R$ por $\vec{\omega}_{cuerpo}$.
+
+\end{document}
