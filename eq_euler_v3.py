@@ -193,6 +193,12 @@ pbar = tqdm(total=len(t_eval), desc="Renderizando video")
 # Crear animación
 ani = FuncAnimation(fig, update, frames=len(t_eval), fargs=(pbar,), interval=20, blit=False)
 
+# Agregar leyendas y ajustar layout antes de guardar
+ax_body.legend(loc='upper right', fontsize='small')
+ax_fixed.legend(loc='upper right', fontsize='small')
+ax3d.legend(loc='upper left', fontsize='small')
+plt.tight_layout()
+
 # Guardar como video
 print("Guardando video 'simulacion_euler_v3.mp4'...")
 try:
@@ -204,8 +210,4 @@ except Exception as e:
     ani.save('simulacion_euler_v3.mp4', fps=30)
 
 pbar.close()
-
-ax_body.legend(loc='upper right', fontsize='small')
-ax_fixed.legend(loc='upper right', fontsize='small')
-ax3d.legend(loc='upper left', fontsize='small')
 print("Proceso completado.")
