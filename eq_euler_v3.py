@@ -48,7 +48,7 @@ def euler_eom(t, omega):
     return [dw1_dt, dw2_dt, dw3_dt]
 
 # Simulación de la velocidad angular (Paso 1)
-omega0 = [0.001, 1.0, 0.0]
+omega0 = [0.0001, 1.0, 0.0]
 t_span = (0, 185)
 t_eval = np.linspace(t_span[0], t_span[1], 1000)
 sol_omega = solve_ivp(euler_eom, t_span, omega0, t_eval=t_eval, method='DOP853', dense_output=True, rtol=1e-10, atol=1e-12)
