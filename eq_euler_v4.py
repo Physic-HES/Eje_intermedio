@@ -23,9 +23,7 @@ def load_and_process_mesh(filename, target_scale=1.0):
     mesh.density = 7850e-9
     I_matrix = mesh.moment_inertia
     I_principal = np.diag(I_matrix)
-    
-    # NO simplificar la malla para máxima fidelidad
-    
+        
     # Escalar para visualización
     max_dim = np.ptp(mesh.bounds, axis=0).max()
     mesh_scaled = mesh.copy()
@@ -88,7 +86,7 @@ ax3d_final = fig_3d.add_subplot(111, projection='3d')
 setup_3d_axes(ax3d_final)
 R_final = R_t[-1]
 
-# Dibujar la pieza STL con mayor visibilidad
+# Dibujar la pieza STL
 v_final = mesh_body.vertices @ R_final.T
 poly_final = Poly3DCollection(v_final[mesh_body.faces], alpha=0.6, facecolor='skyblue', edgecolor='gray', lw=0.1)
 ax3d_final.add_collection3d(poly_final)
@@ -132,7 +130,7 @@ plt.grid(True)
 plt.savefig('figura_omega_fijo_v4.png')
 plt.close()
 
-# 5. Animación Interactiva (Layout original 16:9 sin el gráfico de error)
+# 5. Animación Interactiva (Para el Video)
 fig = plt.figure(figsize=(16, 9))
 gs = gridspec.GridSpec(2, 2, width_ratios=[1.2, 1])
 
@@ -140,7 +138,7 @@ ax3d = fig.add_subplot(gs[:, 0], projection='3d')
 setup_3d_axes(ax3d)
 ax3d.set_title('Visualización 3D: Ejes Principales y Pieza')
 
-# Inicializar la pieza en la animación con mayor visibilidad
+# Inicializar la pieza en la animación
 poly_anim = Poly3DCollection(mesh_body.vertices[mesh_body.faces], alpha=0.6, facecolor='skyblue', edgecolor='gray', lw=0.1)
 ax3d.add_collection3d(poly_anim)
 
@@ -170,7 +168,7 @@ def update(num, pbar):
     global quiver_artists
     R = R_t[num]; wf = w_fixed_t[num]
     
-    # Actualizar pieza STL (Alta fidelidad)
+    # Actualizar pieza STL 
     v_now = mesh_body.vertices @ R.T
     poly_anim.set_verts(v_now[mesh_body.faces])
     
