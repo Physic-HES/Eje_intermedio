@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 import matplotlib.gridspec as gridspec
 
 # 1. Parámetros y Ecuaciones de Euler (Sistema del Cuerpo)
-I1, I2, I3 = 10.0, 15.0, 20.0
+I1, I2, I3 = 21.65, 17.71, 6.76
 
 def euler_eom(t, omega):
     w1, w2, w3 = omega
